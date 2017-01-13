@@ -9,7 +9,7 @@ class InetAddress : copyable
     public:
         InetAddress(StringArg ip, uint16_t port);
         explicit InetAddress(StringArg ipPort);
-        explicit InetAddress(unit16_t port, bool loopbackOnly = false);
+        explicit InetAddress(uint16_t port, bool loopbackOnly = false);
         explicit InetAddress(const struct sockaddr_in& saddr) : saddr_(saddr) { }
 
         std::string toIp() const;
