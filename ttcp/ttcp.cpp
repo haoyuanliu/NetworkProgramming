@@ -91,7 +91,7 @@ void transmit(const Options &opt)
         return;
     }
     printf("Connecting to %s\n", addr.toIpPort().c_str());
-    TcpStreamPtr Stream(TcpStream::connect(addr));
+    TcpStreamPtr stream(TcpStream::connect(addr));
     if(!stream)
     {
         printf("Unable to connect %s\n", addr.toIpPort().c_str());
@@ -117,7 +117,7 @@ void transmit(const Options &opt)
     PayloadMessage* payload = static_cast<PayloadMessage*>(::malloc(total_len));
     std::unique_ptr<PayloadMessage, void(*)(void*)> freeIt(payload, ::free);
     assert(payload);
-    payload->length = htonl(ope->length);
+    payload->length = htonl(opt.length);
     for(int i = 0; i < opt.length; ++i)
     {
         payload->data[i] = "0123456789ABCDEF"[i % 16];
