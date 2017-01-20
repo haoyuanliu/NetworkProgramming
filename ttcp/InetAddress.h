@@ -34,4 +34,4 @@ class InetAddress : copyable
     private:
         static bool resolveSlow(const char *hostname, InetAddress*);
         struct sockaddr_in saddr_;
-}
+};

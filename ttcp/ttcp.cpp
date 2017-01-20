@@ -90,5 +90,12 @@ void transmit(const Options &opt)
         printf("Unable to resolve %s\n", opt.host.c_str());
         return;
     }
-    printf("Connecting to %s\n", addr.toIPPort().c_str());
+    printf("Connecting to %s\n", addr.toIpPort().c_str());
+    TcpStreamPtr Stream(TcpStream::connect(addr));
+    if(!stream)
+    {
+        printf("Unable to connect %s\n", addr.toIpPort().c_str());
+        perror("");
+        return;
+    }
 }
