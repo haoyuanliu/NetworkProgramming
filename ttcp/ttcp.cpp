@@ -139,3 +139,75 @@ void transmit(const Options &opt)
     double elapsed = now() - start;
     printf("%.3f seconds\n%.3f MiB/s\n", elapsed, total_mb / elapsed);
 }
+
+void receive(const Options& opt)
+{
+    Acceptor acceptor(InetAddress(opt.port));
+    TcpStreamPtr stream(acceptor.accept());
+    if(!stream)
+        return;
+
+    struct SessionMessage sessionMessage = {0, 0};
+    if(stream->receiveAll(&sessionMessage, sizeof(sessionMessage)) != sizeof(sessionMessage))
+    {
+        perror("Read SessionMessage");
+        return;
+    }
+
+    sessionMessage.number = ntohl(sessionMessage.number);
+    sessionMessage.length = ntohl(sessionMessage.length);
+    printf("Receive buffer length = %d\nreceive number of buffers = %d\n",
+                sessionMessage.length, sessionMessage.number);
+    double total_mb = 1.0 * sessionMessage.length * sessionMessage.number / 1024 / 1024;
+    printf("%.3f MiB in total\n", total_mb);
+
+    const int total_len = sizeof(int32_t) + sessionMessage.length;
+    PayloadMessage* payload = static_cast<PayloadMessage*>(::malloc(total_len));
+    std::unique_ptr<PayloadMessage, void(*)(void*)> freeIt(payload, ::free);
+    assert(payload);
+    double start = now();
+    for(int i = 0; i < sessionMessage.length; ++i)
+    {
+        payload->length = 0;
+        if(stream->receiveAll(&payload->length, sizeof(payload->length)) != sizeof(payload->length))
+        {
+            perror("read length");
+            return;
+        }
+        payload->length = ntohl(payload->length);
+        assert(payload->length == sessionMessage.length);
+        if(stream->receiveAll(payload->data, payload->length) != payload->length)
+        {
+            perror("Read payload data");
+            return;
+        }
+        int32_t ack = htonl(payload->length);
+        if(stream->sendAll(&ack, sizeof(ack)) != sizeof(ack))
+        {
+            perror("write ack");
+            return;
+        }
+    }
+    double elapsed = now() - start;
+    printf("%.3f seconds\n%.3f MiB/s\n", elapsed, total_mb / elapsed);
+}
+
+int main(int argc, char *argv[])
+{
+    Options options;
+    if(parseCommandLine(argc, argv, &options))
+    {
+        if(options.transmit)
+        {
+            transmit(options);
+        }
+        else if(options.receive)
+        {
+            receive(options);
+        }
+        else
+        {
+            assert(0);
+        }
+    }
+}
