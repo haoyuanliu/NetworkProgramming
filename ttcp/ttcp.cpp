@@ -98,4 +98,44 @@ void transmit(const Options &opt)
         perror("");
         return;
     }
+    if(opt.nodelay)
+    {
+        stream->setTcpNoDelay(true);
+    }
+    printf("Connected\n");
+    double start = now();
+    struct SessionMessage sessionMessage = {0, 0};
+    sessionMessage.number = htonl(opt.number);
+    sessionMessage.length = htonl(opt.length);
+    if(stream->sendAll(&sessionMessage, sizeof(sessionMessage)) != sizeof(sessionMessage))
+    {
+        perror("Write SessionMessage");
+        return;
+    }
+
+    const int total_len = sizeof(int32_t) + opt.length;
+    PayloadMessage* payload = static_cast<PayloadMessage*>(::malloc(total_len));
+    std::unique_ptr<PayloadMessage, void(*)(void*)> freeIt(payload, ::free);
+    assert(payload);
+    payload->length = htonl(ope->length);
+    for(int i = 0; i < opt.length; ++i)
+    {
+        payload->data[i] = "0123456789ABCDEF"[i % 16];
+    }
+    double total_mb = 1.0 * opt.length * opt.number / 1024 / 1024;
+    printf("%.3f MiB in total\n", total_mb);
+
+    for(int i = 0; i < opt.number; ++i)
+    {
+        int nw = stream->sendAll(payload, total_len);
+        assert(nw == total_len);
+
+        int ack = 0;
+        int nr = stream->receiveAll(&ack, sizeof(ack));
+        assert(nr == sizeof(ack));
+        ack = ntohl(ack);
+        assert(ack == opt.length);
+    }
+    double elapsed = now() - start;
+    printf("%.3f seconds\n%.3f MiB/s\n", elapsed, total_mb / elapsed);
 }
