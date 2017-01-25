@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/bin/sh
 
 SRCS = "Acceptor.cpp InetAddress.cpp TcpStream.cpp Socket.cpp"
 
