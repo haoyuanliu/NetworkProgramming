@@ -43,13 +43,13 @@ bool parseCommandLine(int argc, char *argv[], Options *opt)
 
     po::options_description desc("Allowed options");
     desc.add_options()
-        ("help, h", "Help")
-        ("port, p", po::value<uint16_t>(&opt->port)->default_value(5001), "TCP port")
-        ("length, l", po::value<int>(&opt->length)->default_value(65536), "Buffer Length")
-        ("number, n", po::value<int>(&opt->number)->default_value(8192), "Number of buffers")
-        ("trans, t", po::value<std::string>(&opt->host), "Transmit")
-        ("recv, r", "Receive")
-        ("nodelay, D", "set TCP_NODELAY")
+        ("help,h", "Help")
+        ("port,p", po::value<uint16_t>(&opt->port)->default_value(5001), "TCP port")
+        ("length,l", po::value<int>(&opt->length)->default_value(65536), "Buffer Length")
+        ("number,n", po::value<int>(&opt->number)->default_value(8192), "Number of buffers")
+        ("trans,t", po::value<std::string>(&opt->host), "Transmit")
+        ("recv,r", "Receive")
+        ("nodelay,D", "set TCP_NODELAY")
         ;
     po::variables_map vm;
     po::store(po::parse_command_line(argc, argv, desc), vm);
