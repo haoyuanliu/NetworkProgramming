@@ -15,7 +15,7 @@ namespace
     {
         return static_cast<const SA*>(implicit_cast<const void*>(addr));
     }
-    SA* sockaddr_cast(struct sockaddr_in *addr)
+    SA* sockaddr_cast(struct sockaddr_in* addr)
     {
         return static_cast<SA*>(implicit_cast<void*>(addr));
     }
@@ -36,10 +36,10 @@ Socket::~Socket()
     }
 }
 
-void Socket::bindOrDie(const InetAddress &addr)
+void Socket::bindOrDie(const InetAddress& addr)
 {
     const struct sockaddr_in& saddr = addr.getSockAddrInet();
-    int ret = ::bind(sockfd_, sockaddr_cast(&addr, sizeof saddr));
+    int ret = ::bind(sockfd_, sockaddr_cast(&saddr), sizeof saddr);
     if(ret)
     {
         perror("Socket::bindOrDie");

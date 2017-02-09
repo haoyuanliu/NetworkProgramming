@@ -21,73 +21,73 @@ namespace
     {
         return sock.getLocalAddr() == sock.getPeerAddr();
     }
+}
 
-    TcpStream::TcpStream(Socket&& sock) : sock_(std::move(sock))
-    {}
+TcpStream::TcpStream(Socket&& sock) : sock_(std::move(sock))
+{}
 
-    int TcpStream::receiveAll(void *buf, int len)
+int TcpStream::receiveAll(void *buf, int len)
+{
+    return ::recv(sock_.fd(), buf, len, MSG_WAITALL);
+}
+
+int TcpStream::receiveSome(void *buf, int len)
+{
+    return sock_.read(buf, len);
+}
+
+int TcpStream::sendAll(const void* buf, int len)
+{
+    int written = 0;
+    while(written < len)
     {
-        return ::recv(sock_.fd(), buf, len, MSG_WAITALL);
-    }
-
-    int TcpStream::receiveSome(void *buf, int len)
-    {
-        return sock_.read(buf, len);
-    }
-
-    int TcpStream::sendAll(const void* buf, int len)
-    {
-        int written = 0;
-        while(written < len)
+        int nw = sock_.write(static_cast<const char*>(buf) + written, len-written);
+        if(nw > 0)
         {
-            int nw = sock_.write(static_cast<const char*>(buf) + written, len-written);
-            if(nw > 0)
-            {
-                written += nw;
-            }
-            else if(nw == 0)
-                break;
-            else if(errno != EINTR)
-                break;
+            written += nw;
         }
-        return written;
+        else if(nw == 0)
+            break;
+        else if(errno != EINTR)
+            break;
     }
+    return written;
+}
 
-    int TcpStream::sendSome(const void *buf, int len)
-    {
-        return sock_.write(buf, len);
-    }
+int TcpStream::sendSome(const void *buf, int len)
+{
+    return sock_.write(buf, len);
+}
 
-    void TcpStream::setTcpNoDelay(bool on)
-    {
-        sock_.setTcpNoDelay(on);
-    }
+void TcpStream::setTcpNoDelay(bool on)
+{
+    sock_.setTcpNoDelay(on);
+}
 
-    void TcpStream::shutdownWrite()
-    {
-        sock_.shutdownWrite();
-    }
+void TcpStream::shutdownWrite()
+{
+    sock_.shutdownWrite();
+}
 
-    TcpStreamPtr TcpStream::connect(const InetAddress& serverAddr)
-    {
-        return connectInternal(serverAddr, nullptr);
-    }
+TcpStreamPtr TcpStream::connect(const InetAddress& serverAddr)
+{
+    return connectInternal(serverAddr, nullptr);
+}
 
-    TcpStreamPtr TcpStream::connect(const InetAddress& serverAddr, const InetAddress& localAddr)
-    {
-        return connectInternal(serverAddr, &localAddr);
-    }
+TcpStreamPtr TcpStream::connect(const InetAddress& serverAddr, const InetAddress& localAddr)
+{
+    return connectInternal(serverAddr, &localAddr);
+}
 
-    TcpStreamPtr TcpStream::connectInternal(const InetAddress& serverAddr, const InetAddress* localAddr)
+TcpStreamPtr TcpStream::connectInternal(const InetAddress& serverAddr, const InetAddress* localAddr)
+{
+    TcpStreamPtr stream;
+    Socket sock(Socket::createTCP());
+    if(localAddr)
+        sock.bindOrDie(*localAddr);
+    if(sock.connect(serverAddr) == 0 && !isSelfConnection(sock))
     {
-        TcpStreamPtr stream;
-        Socket sock(Socket::createTCP());
-        if(localAddr)
-            sock.bindOrDie(*localAddr);
-        if(sock.connect(serverAddr) == 0 && !isSelfConnection(sock))
-        {
-            stream.reset(new TcpStream(std::move(sock)));
-        }
-        return stream;
+        stream.reset(new TcpStream(std::move(sock)));
     }
+    return stream;
 }
