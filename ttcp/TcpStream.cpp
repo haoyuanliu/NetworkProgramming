@@ -27,7 +27,7 @@ namespace
 
     int TcpStream::receiveAll(void *buf, int len)
     {
-        return ::revc(sock_.fd(), buf, len, MSG_WAITALL);
+        return ::recv(sock_.fd(), buf, len, MSG_WAITALL);
     }
 
     int TcpStream::receiveSome(void *buf, int len)

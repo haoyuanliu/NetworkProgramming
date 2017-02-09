@@ -123,6 +123,6 @@ Socket Socket::createTCP()
 Socket Socket::createUDP()
 {
     int sockfd = ::socket(AF_INET, SOCK_DGRAM | SOCK_CLOEXEC, IPPROTO_UDP);
-    asset(sockfd >= 0);
+    assert(sockfd >= 0);
     return Socket(sockfd);
 }
