@@ -18,7 +18,7 @@ class TcpStream : noncopyable
         static TcpStreamPtr connect(const InetAddress& serverAddr, const InetAddress& localAddr);
 
         int receiveAll(void *buf, int len);
-        int reveiveSome(void *buf, int len);
+        int receiveSome(void *buf, int len);
 
         int sendAll(const void* buf, int len);
         int sendSome(const void *buf, int len);
