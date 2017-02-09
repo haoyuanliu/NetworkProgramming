@@ -65,7 +65,7 @@ bool InetAddress::resolveSlow(const char* hostname, InetAddress* out)
 
 bool InetAddress::resolve(StringArg hostname, InetAddress* out)
 {
-    arrset(out);
+    assert(out);
     char buf[kResolveBufSize];
     struct hostent hent;
     struct hostent* he = NULL;
