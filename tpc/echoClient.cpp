@@ -47,7 +47,7 @@ int main(int argc, const char *argv[])
             {
                 printf("Sleeping for 10 seconds\n");
                 ::sleep(10);
-                printf("Down\n");
+                printf("Done\n");
             }
             else if(cmd == 'c')
             {
