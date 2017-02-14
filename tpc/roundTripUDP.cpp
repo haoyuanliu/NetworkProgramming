@@ -40,7 +40,7 @@ void runServer()
         if(nr == sizeof message)
         {
             message.response = now();
-            ssize_t nw = :: sendto(sock.fd(), &message, sizeof message, 0, &peerAddr, addrLen);
+            ssize_t nw = ::sendto(sock.fd(), &message, sizeof message, 0, &peerAddr, addrLen);
             if(nw < 0)
             {
                 perror("Send Message");
@@ -93,7 +93,7 @@ void runClient(const char* server_hostname)
                 printf("Sent message of %d bytes, expect %zd bytes.\n", nw, sizeof message);
             }
 
-            ::usleep(100 * 1000);
+            ::usleep(200 * 1000);
         }
     });
 
