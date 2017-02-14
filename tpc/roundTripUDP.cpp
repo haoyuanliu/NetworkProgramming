@@ -35,7 +35,7 @@ void runServer()
         Message message = {0, 0};
         struct sockaddr peerAddr;
         bzero(&peerAddr, sizeof peerAddr);
-        socklen_t addrlen = sizeof peerAddr;
+        socklen_t addrLen = sizeof peerAddr;
         ssize_t nr = ::recvfrom(sock.fd(), &message, sizeof message, 0, &peerAddr, &addrLen);
         if(nr == sizeof message)
         {
@@ -65,7 +65,7 @@ void runClient(const char* server_hostname)
 {
     Socket sock(Socket::createUDP());
     InetAddress serverAddr(g_port);
-    if(!InetAddress::resolve(server_hostname, &serverAddr));
+    if(!InetAddress::resolve(server_hostname, &serverAddr))
     {
         printf("Unable to resolve %s\n", server_hostname);
         return;
@@ -90,7 +90,7 @@ void runClient(const char* server_hostname)
             }
             else if(nw != sizeof message)
             {
-                printf("Sent message of %zd bytes, expect %zd bytes.\n", nw, sizeof message);
+                printf("Sent message of %d bytes, expect %zd bytes.\n", nw, sizeof message);
             }
 
             ::usleep(100 * 1000);
