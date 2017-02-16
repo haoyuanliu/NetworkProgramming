@@ -12,3 +12,4 @@ $CC -std=c++11 -Wall -Wextra -g $SRCS roundTripUDP.cpp -o roundTripUDP -lpthread
 $CC -std=c++11 -Wall -Wextra -g $SRCS nodelayClient.cpp -o nodelayClient
 $CC -std=c++11 -Wall -Wextra -g $SRCS nodelayServer.cpp -o nodelayServer
 $CC -std=c++11 -Wall -Wextra -g $SRCS sender.cpp -o sender -lpthread
+$CC -std=c++11 -Wall -Wextra -g $SRCS netcat.cpp -o netcat -lpthread
