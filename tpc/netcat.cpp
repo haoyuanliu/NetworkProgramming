@@ -9,10 +9,10 @@
 
 int write_n(int fd, const void* buf, int length)
 {
-    int wirtten = 0;
+    int written = 0;
     while(written < length)
     {
-        itn nw = ::write(fd, static_cast<const char*>(buf) + written, length - written);
+        int nw = ::write(fd, static_cast<const char*>(buf) + written, length - written);
         if(nw > 0)
         {
             written += nw;
@@ -57,7 +57,7 @@ void run(TcpStreamPtr stream)
             break;
         }
     }
-    steam->shutdownWrite();
+    stream->shutdownWrite();
     thr.join();
 }
 
