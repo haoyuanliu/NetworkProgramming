@@ -51,7 +51,7 @@ namespace muduo
 
     inline Timestamp addTime(Timestamp timestamp, double seconds)
     {
-        int64_t delta = static_cast<int64_t>(seconds * TImestamp::kMicroSecondsPerSecond);
+        int64_t delta = static_cast<int64_t>(seconds * Timestamp::kMicroSecondsPerSecond);
         return Timestamp(timestamp.microSecondsSinceEpoch() + delta);
     }
 
