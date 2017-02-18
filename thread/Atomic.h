@@ -1,5 +1,5 @@
-#ifndef MUDUO_BASE_TIMESTAMP_H
-#define MUDUO_BASE_TIMESTAMP_H
+#ifndef MUDUO_BASE_ATOMIC_H
+#define MUDUO_BASE_ATOMIC_H
 
 #include <boost/noncopyable.hpp>
 #include <stdint.h>

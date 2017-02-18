@@ -22,6 +22,8 @@ namespace muduo
             std::string toString() const;
             std::string toFormattedString() const;
 
+            bool valid() const { return microSecondsSinceEpoch_ > 0; }
+
             int64_t microSecondsSinceEpoch() const { return microSecondsSinceEpoch_; }
 
             static Timestamp now();
@@ -54,6 +56,5 @@ namespace muduo
         int64_t delta = static_cast<int64_t>(seconds * Timestamp::kMicroSecondsPerSecond);
         return Timestamp(timestamp.microSecondsSinceEpoch() + delta);
     }
-
-#endif
 }
+#endif
