@@ -31,7 +31,6 @@ namespace muduo
 
         private:
         int64_t microSecondsSinceEpoch_;
-    }
     };
 
     inline bool operator<(Timestamp lhs, Timestamp rhs)
